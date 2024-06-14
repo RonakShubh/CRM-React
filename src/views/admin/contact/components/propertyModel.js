@@ -1,0 +1,114 @@
+import {
+  Button,
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react";
+import Spinner from "components/spinner/Spinner";
+import { useEffect, useState } from "react";
+import { postApi } from "services/api";
+import CheckTable from "./propertyTable";
+import { fetchPropertyData } from "../../../../redux/propertySlice";
+import { useDispatch, useSelector } from "react-redux";
+
+const PropertyModel = (props) => {
+  const { onClose, isOpen, fetchData, id, interestProperty } = props;
+  const [selectedValues, setSelectedValues] = useState([]);
+  const [isLoding, setIsLoding] = useState(false);
+
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.propertyData.data);
+
+  const columns = [
+    { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "property Type", accessor: "propertyType" },
+    { Header: "property Address", accessor: "propertyAddress" },
+    { Header: "listing Price", accessor: "listingPrice" },
+    { Header: "square Footage", accessor: "squareFootage" },
+    { Header: "year Built", accessor: "yearBuilt" },
+  ];
+  const uniqueValues = [...new Set(selectedValues)];
+
+  const handleSubmit = async () => {
+    try {
+      setIsLoding(true);
+      let result = await postApi(
+        `api/contact/add-property-interest/${id}`,
+        uniqueValues
+      );
+      if (result && result.status === 200) {
+        fetchData();
+        onClose();
+      }
+    } catch (e) {
+      console.error("error----->", e);
+    } finally {
+      setIsLoding(false);
+    }
+  };
+  useEffect(() => {
+    dispatch(fetchPropertyData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    interestProperty?.map((item) =>
+      setSelectedValues((prevSelectedValues) => [...prevSelectedValues, item])
+    );
+  }, [interestProperty]);
+
+  return (
+    <Modal onClose={onClose} size="full" isOpen={isOpen}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Select Interested Property</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {isLoding ? (
+            <Flex justifyContent={"center"} alignItems={"center"} width="100%">
+              <Spinner />
+            </Flex>
+          ) : (
+            <CheckTable
+              tableData={data}
+              selectedValues={selectedValues}
+              setSelectedValues={setSelectedValues}
+              columnsData={columns}
+              title="Properties"
+            />
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            size="sm"
+            variant="brand"
+            onClick={handleSubmit}
+            disabled={isLoding ? true : false}
+          >
+            {" "}
+            {isLoding ? <Spinner /> : "Save"}
+          </Button>
+          <Button
+            size="sm"
+            sx={{
+              marginLeft: 2,
+              textTransform: "capitalize",
+            }}
+            variant="outline"
+            colorScheme="red"
+            onClick={() => onClose()}
+          >
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export default PropertyModel;
