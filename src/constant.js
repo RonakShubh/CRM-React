@@ -1,4 +1,4 @@
 export const constant = {
   // baseUrl: process.env.REACT_APP_BASE_URL
-  baseUrl: "http://192.168.56.202:5001/",
+  baseUrl: "https://crm-node-dzzs.onrender.com/",
 };
