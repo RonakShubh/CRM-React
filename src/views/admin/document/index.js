@@ -19,7 +19,6 @@ import Spinner from "components/spinner/Spinner";
 import { constant } from "constant";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { documentSchema } from "schema";
 import { deleteApi, getApi } from "services/api";
@@ -58,17 +57,8 @@ const Index = () => {
       AddData();
     },
   });
-  const {
-    errors,
-    touched,
-    values,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    resetForm,
-  } = formik;
-  const navigate = useNavigate();
+  const { errors, touched, values, handleChange, handleSubmit, setFieldValue } =
+    formik;
 
   const download = async (data) => {
     if (data) {
@@ -117,6 +107,7 @@ const Index = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [linkDocument, handleSubmit]);
 
   return (

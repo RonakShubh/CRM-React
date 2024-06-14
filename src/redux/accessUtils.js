@@ -12,6 +12,7 @@ export const HasAccess = (actions) => {
     if (window.location.pathname === "/dashboard") {
       dispatch(fetchRoles(user?._id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   const roles = useSelector((state) => state?.roles?.roles);
