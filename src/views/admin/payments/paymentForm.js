@@ -4,6 +4,7 @@ import * as yup from "yup";
 import masterCardImg from "../../../assets/img/masterCard.png";
 import americanExpressImg from "../../../assets/img/american-express.png";
 import visaImg from "../../../assets/img/visa.png";
+import { constant } from "../../../constant";
 
 export default function PaymentForm() {
   const initialValues = {
@@ -32,7 +33,7 @@ export default function PaymentForm() {
     formik;
 
   const addPayment = () => {
-    fetch(`${process.env.REACT_APP_BASE_URL}api/payment/add`, {
+    fetch(`${constant.baseUrl}api/payment/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
